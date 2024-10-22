@@ -1,0 +1,4 @@
+REM This script just presses F12 a bunch of times to get into the boot menu
+DEFAULTDELAY 500
+F12
+REPEAT 100
