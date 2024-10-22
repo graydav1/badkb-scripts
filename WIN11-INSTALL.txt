@@ -1,0 +1,56 @@
+REM This script automates the installation of Windows 11 from a USB stick. 
+REM Please note that you may need to change a LOT of delays here to make this work,
+REM as it's timed to work with the Dell Latitude 5480 and the Lenovo X13 Yoga (Gen 1, 2 and 3)
+REM and also with a Windows 11 installation USB stick made using the Media Creation Tool
+
+DEFAULTDELAY 500
+
+REM Move to the locale selector and select English (Australia)
+TAB
+STRING English (Australia)
+ALT N
+ALT I
+DELAY 15000
+
+REM Skip the "I don't have a product key". If this screen doesn't appear, the script should continue as normal
+TAB
+TAB
+TAB
+ENTER
+DELAY 5000
+
+REM Accept the license, go next, go to custom install
+ALT A
+ALT N
+ALT C
+
+REM Wait until the list of drives has appeared, then move to the top of the list
+DELAY 500
+HOME
+
+REM Remove the First Drive
+ALT D
+LEFT
+ENTER
+HOME
+DOWN
+REM Remove the Second Drive
+ALT D
+LEFT
+ENTER
+HOME
+DOWN
+REM Remove the Third Drive
+ALT D
+LEFT
+ENTER
+HOME
+DOWN
+REM Remove the Fourth Drive
+ALT D
+LEFT
+ENTER
+HOME
+
+REM Start the install
+ALT N
