@@ -1,0 +1,20 @@
+REM 100ms delay between button presses by default
+DEFAULTDELAY 100
+
+REM Open Command Prompt
+SHIFT F10
+
+REM For some reason, command prompt isn't focused when you open it, so we alt-double-tab to make it active
+HOLD ALT
+TAB
+TAB
+RELEASE ALT
+DELAY 500
+
+REM Next, we open powershell and run some commands. In order:
+REM Enable PS Remoting. Required, I think?
+REM Install NuGet Package Provider
+REM Install Get-WindowsAutoPilotInfo
+REM Run the Get-WindowsAutoPilotInfo script, appending the results to D:\autopilot.csv and setting the GroupTag to StudentLoan (NOTE: Make sure you change this to suit! Also, you might need to change the drive letter if you have a DVD drive on the machine!)
+REM Then we convert the file from utf16 to ascii so we can upload them to Autopilot, no fiddling in Excel necessary
+STRINGLN PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command Enable-PSRemoting -SkipNetworkProfileCheck -Force; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Confirm:$false -Force:$true; Install-Script -Name Get-WindowsAutoPilotInfo -Confirm:$false -Force:$true; Get-WindowsAutopilotInfo.ps1 -GroupTag StudentLoan -ComputerName $env:computername -OutputFile d:\autopilot.csv -Append; Get-Content -Path d:\autopilot.csv | Out-File -FilePath d:\autopilot.csv -Encoding ascii
