@@ -1,3 +1,12 @@
+REM This script retrieves a device hash from a Windows machine that has had a clean Windows 11 installation done.
+REM Here's how to use this:
+REM 0. Edit this script. You'll want to set the GroupTag parameter, and possibly change the drive letter where the file is outputted if you have a DVD drive in the machine or something else that means D: isn't the USB stick.
+REM 1. Create a Windows 11 installation USB using the media creation tool
+REM 2. Install Windows 11 (see the WIN11-INSTALL.txt BadKB script if you want to automate that too)
+REM 3. When the computer reboots to the OOBE screen, run this script
+REM 4. It will press Shift+F10 to bring up a command prompt, then run all of this. Make sure that the USB stick is still plugged in and the drive is D:
+REM If the command prompt isn't the active window, cancel the script and run it again so that the command prompt is the active window
+
 REM 100ms delay between button presses by default
 DEFAULTDELAY 100
 
@@ -7,14 +16,19 @@ SHIFT F10
 REM For some reason, command prompt isn't focused when you open it, so we alt-double-tab to make it active
 HOLD ALT
 TAB
+DELAY 100
 TAB
 RELEASE ALT
-DELAY 500
+DELAY 1000
 
-REM Next, we open powershell and run some commands. In order:
-REM Enable PS Remoting. Required, I think?
-REM Install NuGet Package Provider
-REM Install Get-WindowsAutoPilotInfo
-REM Run the Get-WindowsAutoPilotInfo script, appending the results to D:\autopilot.csv and setting the GroupTag to StudentLoan (NOTE: Make sure you change this to suit! Also, you might need to change the drive letter if you have a DVD drive on the machine!)
-REM Then we convert the file from utf16 to ascii so we can upload them to Autopilot, no fiddling in Excel necessary
-STRINGLN PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command Enable-PSRemoting -SkipNetworkProfileCheck -Force; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Confirm:$false -Force:$true; Install-Script -Name Get-WindowsAutoPilotInfo -Confirm:$false -Force:$true; Get-WindowsAutopilotInfo.ps1 -GroupTag StudentLoan -ComputerName $env:computername -OutputFile d:\autopilot_temp.csv -Append; Get-Content -Path d:\autopilot_temp.csv ^| Out-File -FilePath d:\autopilot.csv -Encoding ascii
+REM Next, we make and CD into the powershell scripts folder. We do this to make sure that the script actually runs
+STRINGLN mkdir "C:\Program Files\WindowsPowerShell\Scripts" & cd /D "C:\Program Files\WindowsPowerShell\Scripts"
+
+REM Next we run the powershell script. The following command does several things:
+REM 1. Check for an internet connection (and halt until it's available)
+REM 2. Installs NuGet as a package provider. This is where the Get-WindowsAutoPilotInfo script is hosted
+REM 3. Installs the Get-WindowsAutoPilotInfo script, as well as the Get-AutopilotDiagnostics script for troubleshooting if things go awry
+REM 4. Run the Get-WindowsAutoPilotInfo command and outputs it to autopilot_temp.csv (and sets the group tag to StudentLoanPATTesting)
+REM 5. Converts the file into ASCII. If we don't do this, Excel just sees it as a .txt file and Intune tells us the file is formatted incorrectly.
+
+STRINGLN PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command Write-Host "Checking for internet connection. This script will not continue until it can reach microsoft.com"; while ($true) { if (Test-Connection -comp microsoft.com -count 1 -quiet) { Write-Host "Internet connection established. Waiting 5 seconds"; Start-Sleep -Seconds 5; break } elseif (\$Error[0].Exception.Message -match 'No such host is known') { continue } else { Write-Host 'An error occurred. Unplug and re-plug the network adaptor and press a key when ready'; [System.Console]::ReadKey() ^| Out-Null } }; Enable-PSRemoting -SkipNetworkProfileCheck -Force; Install-PackageProvider -Name NuGet -Confirm:$false -Force:$true; Install-Script -Name Get-WindowsAutoPilotInfo -Confirm:$false -Force:$true; Install-Script -Name Get-AutopilotDiagnostics -Confirm:$false -Force:$true; .\Get-WindowsAutopilotInfo.ps1 -GroupTag StudentLoanPATTesting -ComputerName $env:computername -OutputFile d:\autopilot_temp.csv -Append; Get-Content -Path d:\autopilot_temp.csv ^| Out-File -FilePath d:\autopilot.csv -Encoding ascii
