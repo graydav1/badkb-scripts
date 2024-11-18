@@ -1,0 +1,58 @@
+REM This automates (most of) setting the time in the Lenovo BIOS.
+REM To use this, press F1 to enter the BIOS on boot, then without touching anything, run this script.
+REM You'll need to change the values here to pick the correct(-ish) date and time. There's no way to 
+REM get the current date and time and use it in a BadKB / BadUSB script, so manual adjustment is required
+
+DEFAULTDELAY 100
+
+REM Get to the date and time menu
+DOWN
+DOWN
+DOWN
+ENTER
+
+REM Get to the month picker
+TAB
+TAB
+ENTER
+
+REM Pick November
+DOWN
+REPEAT 9
+ENTER
+
+REM Get to the day picker
+TAB
+ENTER
+
+REM Select the 18th
+DOWN
+REPEAT 16
+ENTER
+
+REM Select the date picker
+TAB
+ENTER
+
+REM Select 2024 (the picker starts from 2001)
+DOWN
+REPEAT 22
+ENTER
+
+REM Select the hour picker
+TAB
+TAB
+ENTER
+
+REM Select 12pm
+DOWN
+REPEAT 11
+ENTER
+
+REM Select the minute picker
+TAB
+ENTER
+
+REM Set the minutes. Go half way to make it easier to find times in the middle
+DOWN
+REPEAT 30
