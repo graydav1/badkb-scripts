@@ -1,8 +1,11 @@
 # badkb-scripts
 This repo contains a few BadKB scripts to be used with the Flipper Zero.
 
-## F12-BOOT.txt
-This simple script just presses F12 100 times, with half a second between each press (i.e. 50 seconds worth of presses). This is done solely to get into the boot menu on many systems, so you don't have to sit there mashing buttons while waiting for the machine to boot. You can run the script with the machine powered off, and when it turns on, it'll start
+## F12-BOOT-MENU.txt
+This simple script just presses F12 1000 times, with half a second between each press (i.e. 50 seconds worth of presses). This is done solely to get into the boot menu on many systems, so you don't have to sit there mashing buttons while waiting for the machine to boot. You can run the script with the machine powered off, and when it turns on, it'll start
+
+## LENOVO-SET-TIME.txt
+This is to be used with the Lenovo Yoga X13 Gen 1, 2 and possibly 3. Due to the (rechargeable?) CMOS battery running flat in many of these machines, frequent resetting of the date and time is needed. This automates mst of that.
 
 ## WIFI-JOIN.txt
 This script joins a Windows machine to wifi using the command line. You'll need to change the SSID and password to suit your environment, and you need to make sure the hex string (which is the SSID in hex) is changed too
